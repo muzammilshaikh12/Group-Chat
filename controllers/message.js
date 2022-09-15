@@ -16,3 +16,13 @@ exports.sendmsg = (req, res, next) => {
       });
   }
 };
+
+exports.retrievemsg = (req,res,next)=>{
+    Message.findAll()
+    .then(messages=>{
+        res.status(200).json({data:messages,success:true})
+    })
+    .catch(err=>{
+        res.status(500).json({message:'Something Went Wrong', err})
+    })
+}
