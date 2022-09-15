@@ -13,11 +13,20 @@ app.use(bodyParser.json());
 
 const sequelize = require('./util/database');
 
-const Users = require('./models/user')
+const User = require('./models/user')
+
+const Message = require('./models/message')
 
 const userRoute = require('./routes/user')
 
+const messageRoute = require('./routes/message')
+
 app.use(userRoute)
+
+app.use(messageRoute)
+
+User.hasMany(Message)
+Message.belongsTo(User)
 
 sequelize.sync()
 .then(user=>{
