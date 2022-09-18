@@ -1,6 +1,6 @@
 const User = require('../models/user.js')
 const bcrypt = require('bcrypt')
-
+const userGroup = require('../models/user-group')
 const token = require('jsonwebtoken')
 
 exports.signup = (req,res,next)=>{
@@ -41,14 +41,17 @@ exports.login=(req,res,next) =>{
             return res.status(400).json({err:'Email Id or Password Missing',success:false})
         }
         User.findAll({where:{email}})
-        .then(user=>{
+        .then(async(user)=>{
+           
+           let usergroup = await userGroup.findAll({where:{userId:user[0].id}})
             if(user.length>0){
                 bcrypt.compare(password, user[0].password, (err,result)=>{
                     if(err) {
                         res.status(400).json({message:'Something went wrong'})
                     }
                     if(result === true){
-                        res.status(200).json({message:'Successfully logged in', success:true, token:generateToken(user[0].id)})
+                        res.status(200).json({message:'Successfully logged in', success:true,
+                         token:generateToken(user[0].id),user:user,usergroup:usergroup})
                     } else {
                         res.status(400).json({message: 'Password did not match', success:false})
                     }
@@ -60,6 +63,7 @@ exports.login=(req,res,next) =>{
         })
 
         .catch(err=>{
+            console.log(err)
             res.status(500).json({message:err, success:false})
         })
 }

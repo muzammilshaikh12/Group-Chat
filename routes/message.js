@@ -6,8 +6,8 @@ const messageController = require('../controllers/message')
 
 const authenticator = require('../middleware/authenticator')
 
-router.post('/sendmsg',authenticator.authenticator,messageController.sendmsg)
+router.post('/sendmsg/:id',authenticator.authenticator,messageController.sendmsg)
 
-router.get('/getmessages',messageController.retrievemsg)
+router.get('/getmessages/:id',messageController.retrievemsg)
 
 module.exports = router;
